@@ -1,0 +1,210 @@
+/* ===============================
+   MAIN CONTAINER
+================================ */
+.inputdata-container {
+  max-width: 1400px;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background: #fafbfc;
+  border-radius: 8px;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.inputdata-td {
+  pointer-events: none;
+}
+
+.inputdata-td:first-child,
+.inputdata-td:last-child {
+  pointer-events: auto;
+}
+
+
+/* ===============================
+   TOP BAR
+================================ */
+.inputdata-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+/* ===============================
+   SEARCH INPUT
+================================ */
+.inputdata-search {
+  padding: 0.65rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  min-width: 300px;
+  font-size: 0.95rem;
+  outline-color: #2563eb;
+  transition: all 0.2s ease;
+}
+
+/* ===============================
+   BUTTON GROUP
+================================ */
+.inputdata-buttons {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* ===============================
+   COMMON BUTTON
+================================ */
+.inputdata-btn {
+  padding: 0.6rem 1.3rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+/* Button Variants */
+.inputdata-btn-upload {
+  background-color: #0891b2;
+  color: #ffffff;
+  border: 1px solid #06b6d4;
+}
+
+.inputdata-btn-remove {
+  background-color: #6b7280;
+  color: #ffffff;
+  border: 1px solid #9ca3af;
+}
+
+.inputdata-btn-delete {
+  background-color: #ef4444;
+  color: #ffffff;
+  border: 1px solid #fca5a5;
+}
+
+.inputdata-btn-download {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: 1px solid #1d4ed8;
+}
+
+/* ===============================
+   TABLE
+================================ */
+.inputdata-table-wrapper {
+  overflow-x: auto;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.inputdata-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  background-color: #ffffff;
+  font-size: 0.95rem;
+}
+
+.inputdata-th {
+  background-color: #1a2332;
+  color: #ffffff;
+  padding: 1rem 0.85rem;
+  border-bottom: 2px solid #2563eb;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
+}
+
+.inputdata-td {
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.inputdata-row-highlight {
+  background-color: #eff6ff;
+  transition: all 0.25s ease;
+}
+
+/* ===============================
+   EDITABLE INPUT
+================================ */
+.inputdata-editable {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+/* ===============================
+   MODAL
+================================ */
+.inputdata-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.inputdata-modal {
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(135deg, #ffffff, #f3f4f6);
+  border-radius: 16px;
+  padding: 1.8rem;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.25);
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.inputdata-modal-title {
+  margin: 0 0 0.6rem 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.inputdata-modal-text {
+  margin: 0 0 1.3rem 0;
+  font-size: 0.95rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.inputdata-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.inputdata-btn-cancel {
+  background-color: #f3f4f6;
+  color: #111827;
+  border: 1px solid #d1d5db;
+}
+
+.inputdata-btn-danger {
+  background-color: #ef4444;
+  color: #ffffff;
+  border: 1px solid #fca5a5;
+}

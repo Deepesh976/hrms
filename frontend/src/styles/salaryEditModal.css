@@ -1,0 +1,484 @@
+/* ===============================
+   SALARY EDIT MODAL STYLES
+   Premium Modal UI Design
+================================ */
+
+/* ===============================
+   MODAL OVERLAY
+================================ */
+.salary-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 1rem;
+}
+
+/* ===============================
+   MODAL CONTAINER
+================================ */
+.salary-modal {
+    width: 100%;
+    max-width: 1000px;
+    max-height: 90vh;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 24px;
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.35);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.salary-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+/* ===============================
+   MODAL HEADER
+================================ */
+.salary-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    color: white;
+    position: relative;
+}
+
+.salary-modal-header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+}
+
+.salary-modal-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    font-family: 'Inter', sans-serif;
+}
+
+.salary-modal-subtitle {
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    font-weight: 400;
+}
+
+.salary-modal-close {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.salary-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+/* ===============================
+   MODAL BODY
+================================ */
+.salary-modal-body {
+    padding: 1.5rem 2rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* ===============================
+   SECTION STYLES
+================================ */
+.salary-section {
+    margin-bottom: 2rem;
+}
+
+.salary-section:last-child {
+    margin-bottom: 0;
+}
+
+.salary-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.salary-section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.salary-section-title svg {
+    color: #667eea;
+}
+
+/* ===============================
+   CURRENT SALARY GRID
+================================ */
+.salary-current-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.salary-field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.salary-field-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.salary-field-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    font-family: 'Inter', monospace;
+}
+
+.salary-field-value.highlight {
+    color: #059669;
+    font-size: 1.25rem;
+}
+
+/* ===============================
+   ADD REVISION FORM
+================================ */
+.salary-add-form {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 2px dashed #3b82f6;
+}
+
+.salary-add-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.salary-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.salary-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.salary-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.salary-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.salary-add-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* ===============================
+   HISTORY TABLE
+================================ */
+.salary-history-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+.salary-history-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.salary-history-table th {
+    background: linear-gradient(135deg, #475569 0%, #334155 100%);
+    color: white;
+    padding: 0.85rem 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.salary-history-table td {
+    padding: 0.75rem;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+    color: #334155;
+}
+
+.salary-history-table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.salary-history-table tbody tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+.salary-history-table tbody tr:hover {
+    background: linear-gradient(90deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.salary-history-table tbody tr.active-row {
+    background: linear-gradient(90deg, #dcfce7 0%, #bbf7d0 100%);
+}
+
+.salary-active-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.salary-history-empty {
+    text-align: center;
+    padding: 2rem;
+    color: #64748b;
+}
+
+/* ===============================
+   BUTTONS
+================================ */
+.salary-btn {
+    padding: 0.65rem 1.25rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.salary-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.salary-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.salary-btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.salary-btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.salary-btn-success:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+}
+
+.salary-btn-danger {
+    background: linear-gradient(135deg, #f43f5e 0%, #dc2626 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+}
+
+.salary-btn-danger:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(244, 63, 94, 0.4);
+}
+
+.salary-btn-secondary {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+
+.salary-btn-secondary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+}
+
+.salary-btn-sm {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.salary-btn-icon {
+    padding: 0.5rem;
+    min-width: 32px;
+    justify-content: center;
+}
+
+/* ===============================
+   LOADING STATE
+================================ */
+.salary-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: #64748b;
+    gap: 0.75rem;
+}
+
+.salary-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid #e2e8f0;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: salary-spin 0.8s linear infinite;
+}
+
+@keyframes salary-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ===============================
+   INLINE EDIT INPUTS
+================================ */
+.salary-inline-input {
+    width: 70px;
+    padding: 0.35rem 0.5rem;
+    border: 2px solid #667eea;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    text-align: center;
+    font-family: 'Inter', monospace;
+}
+
+.salary-inline-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+    .salary-modal {
+        max-height: 95vh;
+        border-radius: 16px;
+    }
+
+    .salary-modal-header {
+        padding: 1.25rem 1.5rem;
+    }
+
+    .salary-modal-body {
+        padding: 1rem 1.25rem;
+    }
+
+    .salary-current-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .salary-add-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .salary-history-table {
+        font-size: 0.75rem;
+    }
+
+    .salary-history-table th,
+    .salary-history-table td {
+        padding: 0.5rem 0.35rem;
+    }
+}
+
+/* ===============================
+   ANIMATIONS
+================================ */
+@keyframes salary-modal-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.salary-modal {
+    animation: salary-modal-in 0.3s ease-out;
+}

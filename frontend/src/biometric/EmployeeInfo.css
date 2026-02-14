@@ -1,0 +1,565 @@
+/* ============================================
+   EMPLOYEE INFO - PROFESSIONAL DESIGN
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+.employee-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+  padding: 5rem 1.5rem 2rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+}
+
+.employee-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ============================================
+   HEADER SECTION
+   ============================================ */
+
+.employee-header {
+  margin-bottom: 2rem;
+  animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.employee-heading {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.employee-heading::before {
+  content: '👥';
+  font-size: 2.2rem;
+}
+
+.employee-subheading {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin-top: 0.4rem;
+  font-weight: 500;
+}
+
+/* ============================================
+   CONTROLS SECTION (BALANCED PROFESSIONAL UI)
+   ============================================ */
+
+.controls-section {
+  background: white;
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+/* =============================
+   FLEX ROW
+   ============================= */
+
+.controls-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+/* =============================
+   INPUTS
+   ============================= */
+
+.search-input {
+  width: 220px;
+  height: 42px;
+  padding: 0 0.9rem;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
+  transition: all 0.25s ease;
+}
+
+.department-select {
+  width: 200px;
+  height: 42px;
+  padding: 0 0.9rem;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
+}
+
+.search-input:focus,
+.department-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+/* =============================
+   BUTTONS (UNIFORM HEIGHT)
+   ============================= */
+
+.btn {
+  height: 42px;                 /* Same height as inputs */
+  padding: 0 1.2rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: none;
+  letter-spacing: 0.02em;
+}
+
+/* =============================
+   BUTTON VARIANTS
+   ============================= */
+
+.btn-upload {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+}
+
+.btn-secondary {
+  background: #6b7280;
+  color: white;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+/* Hover Effect */
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+/* Remove All (make it slightly less aggressive visually) */
+.btn-danger:last-child {
+  background: #ef4444;
+}
+
+/* ============================================
+   TABLE SECTION
+   ============================================ */
+
+.table-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  animation: fadeInUp 0.5s ease-out 0.1s both;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.employee-table thead tr {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.employee-table th {
+  padding: 1rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  color: #e2e8f0;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 2px solid #475569;
+}
+
+.employee-table th:first-child {
+  width: 40px;
+  text-align: center;
+}
+
+.employee-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #334155;
+  text-align: left;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.employee-table tbody tr {
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.employee-table tbody tr:hover {
+  background: #f8fafc;
+  box-shadow: inset 0 0 0 1px #e2e8f0;
+}
+
+.employee-table tbody tr.selected {
+  background: linear-gradient(90deg, #eff6ff 0%, #dbeafe 100%);
+}
+
+.employee-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.employee-table tbody tr:nth-child(even):hover {
+  background: #f1f5f9;
+}
+
+.table-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #94a3b8;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.empty-state::before {
+  content: '📭';
+  display: block;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+/* Loading State */
+.loading-state {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.loading-state::before {
+  content: '⏳';
+  display: inline-block;
+  margin-right: 0.5rem;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ============================================
+   PAGINATION
+   ============================================ */
+
+.pagination-container {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  animation: fadeInUp 0.5s ease-out 0.2s both;
+}
+
+.pagination-btn {
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+}
+
+.pagination-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.pagination-info {
+  font-size: 0.95rem;
+  color: #1e293b;
+  font-weight: 600;
+  min-width: 140px;
+  text-align: center;
+}
+
+.pagination-info strong {
+  color: #3b82f6;
+  font-weight: 700;
+}
+
+/* ============================================
+   STATUS BADGE
+   ============================================ */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  border: 1.5px solid;
+}
+
+.status-working {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  color: #166534;
+  border-color: #86efac;
+}
+
+.status-inactive {
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 1280px) {
+  .controls-top {
+    gap: 0.6rem;
+  }
+
+  .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .employee-table th,
+  .employee-table td {
+    padding: 0.7rem 0.8rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .controls-section.controls-top {
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    width: 200px;
+    flex-shrink: 0;
+  }
+
+  .btn {
+    padding: 0.55rem 0.9rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .employee-container {
+    padding: 4rem 1rem 1.5rem;
+  }
+
+  .employee-heading {
+    font-size: 1.5rem;
+  }
+
+  .controls-section {
+    padding: 1rem;
+  }
+
+  .controls-section.controls-top {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .search-input,
+  .department-select {
+    padding: 0.55rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .search-input {
+    width: 150px;
+    flex-shrink: 0;
+  }
+
+  .btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.75rem;
+  }
+
+  .table-wrapper {
+    max-height: 400px;
+  }
+
+  .employee-table th,
+  .employee-table td {
+    padding: 0.6rem 0.6rem;
+    font-size: 0.8rem;
+  }
+
+  .employee-table th:first-child {
+    width: 36px;
+  }
+
+  .pagination-container {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .employee-container {
+    padding: 4rem 0.75rem 1rem;
+  }
+
+  .employee-heading {
+    font-size: 1.25rem;
+  }
+
+  .employee-heading::before {
+    font-size: 1.8rem;
+  }
+
+  .controls-section {
+    padding: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .controls-section.controls-top {
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .search-input,
+  .department-select {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .search-input {
+    width: 120px;
+    flex-shrink: 0;
+  }
+
+  .btn {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.7rem;
+  }
+
+  .employee-table th,
+  .employee-table td {
+    padding: 0.5rem 0.4rem;
+    font-size: 0.75rem;
+  }
+
+  .table-checkbox {
+    width: 16px;
+    height: 16px;
+  }
+
+  .pagination-container {
+    padding: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .pagination-info {
+    min-width: 100px;
+    font-size: 0.85rem;
+  }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
