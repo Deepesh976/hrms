@@ -161,3 +161,21 @@
 .admin-avatar-container-wrapper {
   position: relative;
 }
+
+/* Ensure sidebar is always above navbar */
+.admin-sidebar {
+  z-index: 1100 !important;
+}
+
+/* Ensure sidebar header stays on top when sticky */
+.admin-sidebar-header {
+  z-index: 1101 !important;
+  position: sticky !important;
+  top: 0 !important;
+}
+
+/* Ensure close button is clickable */
+.admin-sidebar-header button {
+  position: relative;
+  z-index: 1102 !important;
+}

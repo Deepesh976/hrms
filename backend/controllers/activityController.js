@@ -27,7 +27,7 @@ const {
 ====================================================== */
 const PYTHON_BIN = process.env.PYTHON_BIN || 'python';
 
-const ALLOWED_STATUSES = ['P', '½P', 'A', 'WO', 'HO', 'L'];
+const ALLOWED_STATUSES = ['P', '½P', 'A', 'WO', 'HO', 'ALF', 'ALH'];
 
 const EDIT_ROLES = [
   'admin',

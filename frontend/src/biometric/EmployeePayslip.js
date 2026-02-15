@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FaDownload, FaFileInvoiceDollar, FaCalendarAlt, FaUser, FaEye, FaTrash } from 'react-icons/fa';
 import EmployeeNavbar from '../components/Navbar/employeenavbar';
 import axios from '../api/axios';
+import './EmployeePayslip.css';
 
 // Spinner Component
 const LoadingSpinner = () => (
@@ -401,42 +402,42 @@ const generatePayslip = async () => {
   return (
     <>
       <EmployeeNavbar />
-      <div style={styles.container}>
+      <div style={styles.container} className="payslip-container">
         <ToastContainer position="top-right" autoClose={3000} />
 
-        <div style={styles.header}>
-          <h1 style={styles.title}>Generate Salary Slip</h1>
-          <p style={styles.subtitle}>Generate and download your monthly salary slip</p>
+        <div style={styles.header} className="payslip-header">
+          <h1 style={styles.title} className="payslip-title">Generate Salary Slip</h1>
+          <p style={styles.subtitle} className="payslip-subtitle">Generate and download your monthly salary slip</p>
         </div>
 
-        <div style={styles.mainCard}>
+        <div style={styles.mainCard} className="payslip-main-card">
           {employeeData && (
-            <div style={styles.employeeInfo}>
+            <div style={styles.employeeInfo} className="payslip-employee-info">
               <h3 style={{ margin: '0 0 1rem 0', color: '#333' }}>
                 <FaUser style={{ marginRight: '0.5rem' }} />
                 Employee Information
               </h3>
-              <div style={styles.infoRow}>
+              <div style={styles.infoRow} className="payslip-info-row">
                 <span style={styles.infoLabel}>Employee ID:</span>
                 <span style={styles.infoValue}>{employeeData.empId}</span>
               </div>
-              <div style={styles.infoRow}>
+              <div style={styles.infoRow} className="payslip-info-row">
                 <span style={styles.infoLabel}>Name:</span>
                 <span style={styles.infoValue}>{employeeData.empName}</span>
               </div>
-              <div style={styles.infoRow}>
+              <div style={styles.infoRow} className="payslip-info-row">
                 <span style={styles.infoLabel}>Department:</span>
                 <span style={styles.infoValue}>{employeeData.department || 'N/A'}</span>
               </div>
-              <div style={styles.infoRow}>
+              <div style={styles.infoRow} className="payslip-info-row">
                 <span style={styles.infoLabel}>Designation:</span>
                 <span style={styles.infoValue}>{employeeData.designation || 'N/A'}</span>
               </div>
             </div>
           )}
 
-          <div style={styles.formSection}>
-            <h3 style={styles.sectionTitle}>
+          <div style={styles.formSection} className="payslip-form-section">
+            <h3 style={styles.sectionTitle} className="payslip-section-title">
               <FaCalendarAlt />
               Select Pay Period
             </h3>
@@ -448,10 +449,11 @@ const generatePayslip = async () => {
             ) : (
               <>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-                  <div style={styles.inputGroup}>
+                  <div style={styles.inputGroup} className="payslip-input-group">
                     <label style={styles.label}>Month:</label>
                     <select
                       style={styles.select}
+                      className="payslip-select"
                       value={selectedMonth}
                       onChange={(e) => setSelectedMonth(e.target.value)}
                     >
@@ -464,10 +466,11 @@ const generatePayslip = async () => {
                     </select>
                   </div>
 
-                  <div style={styles.inputGroup}>
+                  <div style={styles.inputGroup} className="payslip-input-group">
                     <label style={styles.label}>Year:</label>
                     <select
                       style={styles.select}
+                      className="payslip-select"
                       value={selectedYear}
                       onChange={(e) => setSelectedYear(e.target.value)}
                     >
@@ -487,6 +490,7 @@ const generatePayslip = async () => {
                     opacity: loading ? 0.7 : 1,
                     cursor: loading ? 'not-allowed' : 'pointer',
                   }}
+                  className="payslip-generate-btn"
                   onClick={generatePayslip}
                   disabled={loading}
                 >
@@ -498,8 +502,8 @@ const generatePayslip = async () => {
           </div>
 
           {/* Salary Slip History */}
-          <div style={styles.historySection}>
-            <h3 style={styles.sectionTitle}>
+          <div style={styles.historySection} className="payslip-history-section">
+            <h3 style={styles.sectionTitle} className="payslip-section-title">
               <FaFileInvoiceDollar />
               Your Salary Slips
             </h3>
@@ -510,11 +514,12 @@ const generatePayslip = async () => {
               </div>
             ) : (
               <div style={styles.slipsContainer}>
-                <div style={styles.slipsGrid}>
+                <div style={styles.slipsGrid} className="payslip-slips-grid">
                   {existingSlips.map((slip) => (
                     <div
                       key={slip._id}
                       style={styles.slipCard}
+                      className="payslip-card"
                       onMouseEnter={(e) => {
                         e.currentTarget.style.boxShadow = styles.slipCardHover.boxShadow;
                         e.currentTarget.style.borderColor = styles.slipCardHover.borderColor;
@@ -524,12 +529,12 @@ const generatePayslip = async () => {
                         e.currentTarget.style.borderColor = '#e0e0e0';
                       }}
                     >
-                      <div style={styles.slipCardHeader}>
-                        <div style={styles.slipPeriod}>
+                      <div style={styles.slipCardHeader} className="payslip-card-header">
+                        <div style={styles.slipPeriod} className="payslip-period">
                           <FaCalendarAlt style={{ color: '#007bff', fontSize: '1.3rem' }} />
-                          <span style={styles.monthYear}>{getMonthName(slip.month)}</span>
+                          <span style={styles.monthYear} className="payslip-month-year">{getMonthName(slip.month)}</span>
                         </div>
-                        <span style={styles.yearBadge}>{slip.year}</span>
+                        <span style={styles.yearBadge} className="payslip-year-badge">{slip.year}</span>
                       </div>
 
                       <div style={styles.slipCardContent}>
@@ -539,7 +544,7 @@ const generatePayslip = async () => {
                         </div>
                       </div>
 
-                      <div style={styles.slipActions}>
+                      <div style={styles.slipActions} className="payslip-actions">
                         <button
                           style={{
                             ...styles.actionBtn,
@@ -547,6 +552,7 @@ const generatePayslip = async () => {
                             opacity: loadingSlipId === `view-${slip._id}` ? 0.7 : 1,
                             cursor: loadingSlipId === `view-${slip._id}` ? 'not-allowed' : 'pointer',
                           }}
+                          className="payslip-action-btn"
                           onMouseEnter={(e) => {
                             if (loadingSlipId !== `view-${slip._id}`) {
                               e.target.style.backgroundColor = styles.viewBtnHover.backgroundColor;
@@ -574,6 +580,7 @@ const generatePayslip = async () => {
                             opacity: loadingSlipId === `download-${slip._id}` ? 0.7 : 1,
                             cursor: loadingSlipId === `download-${slip._id}` ? 'not-allowed' : 'pointer',
                           }}
+                          className="payslip-action-btn"
                           onMouseEnter={(e) => {
                             if (loadingSlipId !== `download-${slip._id}`) {
                               e.target.style.backgroundColor = styles.downloadBtnHover.backgroundColor;
@@ -596,6 +603,7 @@ const generatePayslip = async () => {
                         </button>
                         <button
                           style={{ ...styles.actionBtn, ...styles.deleteBtn }}
+                          className="payslip-action-btn"
                           onMouseEnter={(e) => (e.target.style.backgroundColor = styles.deleteBtnHover.backgroundColor)}
                           onMouseLeave={(e) => (e.target.style.backgroundColor = styles.deleteBtn.backgroundColor)}
                           onClick={() => handleDelete(slip)}

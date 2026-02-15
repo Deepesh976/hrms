@@ -2,6 +2,11 @@
 
 const mongoose = require('mongoose');
 
+/* =================================================
+   🔥 CENTRAL STATUS LIST (SINGLE SOURCE OF TRUTH)
+================================================= */
+const STATUS_ENUM = ['P', 'A', '½P', 'WO', 'HO', 'ALF', 'ALH'];
+
 const activitySchema = new mongoose.Schema(
   {
     /* =========================
@@ -70,14 +75,13 @@ const activitySchema = new mongoose.Schema(
     ========================= */
     status: {
       type: String,
-      enum: ['P', 'A', 'L', '½P', 'WO', 'HO'],
+      enum: STATUS_ENUM,
       default: 'A',
       index: true,
     },
 
     /* =================================================
        🔥 STATUS CHANGE FLAGS (USED BY UI)
-       ⚠️ THESE WERE MISSING EARLIER
     ================================================= */
     isStatusModified: {
       type: Boolean,
@@ -87,7 +91,7 @@ const activitySchema = new mongoose.Schema(
 
     originalStatus: {
       type: String,
-      enum: ['P', 'A', 'L', '½P', 'WO', 'HO'],
+      enum: STATUS_ENUM,
       default: null,
     },
 
@@ -120,13 +124,13 @@ const activitySchema = new mongoose.Schema(
       {
         oldStatus: {
           type: String,
-          enum: ['P', 'A', 'L', '½P', 'WO', 'HO'],
+          enum: STATUS_ENUM,
           required: true,
         },
 
         newStatus: {
           type: String,
-          enum: ['P', 'A', 'L', '½P', 'WO', 'HO'],
+          enum: STATUS_ENUM,
           required: true,
         },
 

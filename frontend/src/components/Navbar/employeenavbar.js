@@ -282,7 +282,7 @@ const EmployeeNavbar = () => {
           </div>
 
           <div style={styles.brand} role="heading">
-            {role === 'hr-employee' ? 'HR Employee Portal' : 'Employee Portal'}
+            {role === 'hr-employee' ? 'HR Employee' : 'Employee'}
           </div>
 
           <div style={styles.rightSection}>

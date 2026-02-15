@@ -1,0 +1,50 @@
+/* Mobile responsive filter container */
+@media (max-width: 640px) {
+  .attendance-filter-container {
+    flex-direction: column;
+    align-items: stretch !important;
+    padding: 1rem !important;
+    gap: 1rem !important;
+  }
+
+  .attendance-filter-group {
+    width: 100%;
+  }
+
+  .attendance-filter-input {
+    width: 100% !important;
+    min-width: auto !important;
+    font-size: 1rem;
+  }
+
+  .attendance-filter-icon {
+    display: none;
+  }
+
+  .attendance-container {
+    padding: 1rem !important;
+    padding-top: 80px !important;
+  }
+
+  .attendance-title {
+    font-size: 1.5rem !important;
+  }
+
+  .attendance-subtitle {
+    font-size: 0.95rem !important;
+  }
+
+  .attendance-stats-container {
+    gap: 1rem !important;
+    grid-template-columns: 1fr !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .attendance-stat-card {
+    padding: 1rem !important;
+  }
+
+  .attendance-header {
+    margin-bottom: 1.5rem !important;
+  }
+}

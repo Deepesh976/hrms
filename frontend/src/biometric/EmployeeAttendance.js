@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { FaCalendarAlt, FaClock, FaChartBar, FaFilter } from 'react-icons/fa';
 import EmployeeNavbar from '../components/Navbar/employeenavbar';
 import axios from '../api/axios';
+import './EmployeeAttendance.css';
 
 const styles = {
   container: {
@@ -64,7 +65,17 @@ const styles = {
     display: 'flex',
     gap: '1rem',
     flexWrap: 'wrap',
-    alignItems: 'center',
+    alignItems: 'flex-end',
+  },
+  filterGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem',
+  },
+  filterLabel: {
+    fontSize: '0.85rem',
+    fontWeight: '600',
+    color: '#555',
   },
   filterInput: {
     padding: '0.75rem',
@@ -72,6 +83,8 @@ const styles = {
     borderRadius: '8px',
     fontSize: '0.95rem',
     minWidth: '150px',
+    width: '100%',
+    boxSizing: 'border-box',
   },
   tableContainer: {
     backgroundColor: '#fff',
@@ -478,32 +491,32 @@ const EmployeeAttendance = () => {
     <>
       <EmployeeNavbar />
 
-      <div style={styles.container}>
+      <div style={styles.container} className="attendance-container">
         <ToastContainer position="top-right" autoClose={3000} />
 
         {/* HEADER */}
-        <div style={styles.header}>
-          <h1 style={styles.title}>My Attendance</h1>
-          <p style={styles.subtitle}>
+        <div style={styles.header} className="attendance-header">
+          <h1 style={styles.title} className="attendance-title">My Attendance</h1>
+          <p style={styles.subtitle} className="attendance-subtitle">
             Track your daily attendance and working hours
           </p>
         </div>
 
         {/* STATS */}
-        <div style={styles.statsContainer}>
-          <div style={styles.statCard}>
+        <div style={styles.statsContainer} className="attendance-stats-container">
+          <div style={styles.statCard} className="attendance-stat-card">
             <FaCalendarAlt style={themed.statIcon} />
             <div style={styles.statTitle}>Total Days</div>
             <div style={styles.statValue}>{stats.totalDays}</div>
           </div>
 
-          <div style={styles.statCard}>
+          <div style={styles.statCard} className="attendance-stat-card">
             <FaClock style={themed.statIcon} />
             <div style={styles.statTitle}>Present Days</div>
             <div style={styles.statValue}>{stats.presentDays}</div>
           </div>
 
-          <div style={styles.statCard}>
+          <div style={styles.statCard} className="attendance-stat-card">
             <FaCalendarAlt style={themed.statIcon} />
             <div style={styles.statTitle}>Absent Days</div>
             <div style={styles.statValue}>{stats.absentDays}</div>
@@ -511,32 +524,40 @@ const EmployeeAttendance = () => {
         </div>
 
         {/* FILTERS */}
-        <div style={styles.filterContainer}>
-          <FaFilter style={{ color: accentColor }} />
+        <div style={styles.filterContainer} className="attendance-filter-container">
+          <FaFilter style={{ color: accentColor }} className="attendance-filter-icon" />
 
-          <input
-            type="date"
-            style={styles.filterInput}
-            value={filters.startDate}
-            onChange={(e) =>
-              setFilters((prev) => ({
-                ...prev,
-                startDate: e.target.value,
-              }))
-            }
-          />
+          <div style={styles.filterGroup} className="attendance-filter-group">
+            <label style={styles.filterLabel}>From</label>
+            <input
+              type="date"
+              style={styles.filterInput}
+              className="attendance-filter-input"
+              value={filters.startDate}
+              onChange={(e) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  startDate: e.target.value,
+                }))
+              }
+            />
+          </div>
 
-          <input
-            type="date"
-            style={styles.filterInput}
-            value={filters.endDate}
-            onChange={(e) =>
-              setFilters((prev) => ({
-                ...prev,
-                endDate: e.target.value,
-              }))
-            }
-          />
+          <div style={styles.filterGroup} className="attendance-filter-group">
+            <label style={styles.filterLabel}>To</label>
+            <input
+              type="date"
+              style={styles.filterInput}
+              className="attendance-filter-input"
+              value={filters.endDate}
+              onChange={(e) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  endDate: e.target.value,
+                }))
+              }
+            />
+          </div>
 
           <select
             style={styles.filterInput}

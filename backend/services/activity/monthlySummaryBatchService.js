@@ -7,7 +7,7 @@ const {
 /**
  * Generate monthly summary for ALL employees
  * 🔒 Payroll cycle: 21 → 20
- * 🔒 TOTAL DAYS = Attendance ONLY (NO CALENDAR)
+ * 🔒 TOTAL DAYS = Attendance ONLY (NO CALENDAR DAYS)
  */
 const generateMonthlySummaryForCycle = async (cycleDate) => {
   /* =====================================================
@@ -34,7 +34,7 @@ const generateMonthlySummaryForCycle = async (cycleDate) => {
   const endDate = new Date(year, month, 20, 23, 59, 59, 999);
 
   /* =====================================================
-     3️⃣ FETCH ACTIVITIES
+     3️⃣ FETCH ACTIVITIES (ONLY THIS PAYROLL CYCLE)
   ===================================================== */
   const activities = await Activity.find({
     date: { $gte: startDate, $lte: endDate },
@@ -68,19 +68,27 @@ const generateMonthlySummaryForCycle = async (cycleDate) => {
     if (!summary) continue;
 
     /* =====================================================
-       🔥 FINAL SOURCE OF TRUTH — ATTENDANCE
+       🔥 FINAL SOURCE OF TRUTH — ATTENDANCE COUNTS ONLY
+       totalDays = P + WO + HO + A
+       (AL already included inside P/A logic correctly)
     ===================================================== */
+
     const totalPresent = Number(summary.totalPresent || 0);
+    const totalAbsent = Number(summary.totalAbsent || 0);
     const totalWO = Number(summary.totalWOCount || 0);
     const totalHO = Number(summary.totalHOCount || 0);
-    const totalAbsent = Number(summary.totalAbsent || 0);
 
-    summary.totalDays =
-      totalPresent + totalWO + totalHO + totalAbsent;
+    const finalTotalDays =
+      totalPresent +
+      totalAbsent +
+      totalWO +
+      totalHO;
+
+    summary.totalDays = finalTotalDays;
 
     console.log(
       `📊 MonthlySummary FINAL | ${empId} | ${month}/${year} | ` +
-      `P=${totalPresent}, WO=${totalWO}, HO=${totalHO}, A=${totalAbsent}, TOTAL=${summary.totalDays}`
+      `P=${totalPresent}, A=${totalAbsent}, WO=${totalWO}, HO=${totalHO}, TOTAL=${finalTotalDays}`
     );
 
     await saveMonthlySummary(summary);

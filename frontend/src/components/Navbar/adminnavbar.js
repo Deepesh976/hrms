@@ -153,7 +153,7 @@ const styles = {
     boxShadow: '4px 0 25px rgba(0,0,0,0.1)',
     transform: 'translateX(-100%)',
     transition: 'transform 0.3s ease-in-out',
-    zIndex: 1050,
+    zIndex: 1100,
     overflowY: 'auto',
     display: 'flex',
     flexDirection: 'column',
@@ -180,6 +180,7 @@ const styles = {
     backgroundColor: '#fff',
     position: 'sticky',
     top: 0,
+    zIndex: 1101,
   },
   sidebarTitle: {
     fontSize: '1.1rem',
@@ -309,7 +310,7 @@ const AdminNavbar = () => {
           </div>
 
           <div className="admin-brand" style={styles.brand} role="heading">
-            HR Admin Dashboard
+            HR Admin
           </div>
 
           <div className="admin-right-section" style={styles.rightSection}>

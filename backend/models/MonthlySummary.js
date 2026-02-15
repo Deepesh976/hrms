@@ -6,17 +6,24 @@ const mongoose = require('mongoose');
  * Example:
  * year=2025, month=10 → 21 Oct 2025 – 20 Nov 2025
  */
+
 const monthlySummarySchema = new mongoose.Schema(
   {
+    /* =========================
+       BASIC IDENTITY
+    ========================= */
+
     empId: {
       type: String,
       required: true,
       index: true,
+      trim: true,
     },
 
     empName: {
       type: String,
       required: true,
+      trim: true,
     },
 
     // Payroll cycle start year
@@ -39,36 +46,43 @@ const monthlySummarySchema = new mongoose.Schema(
        ATTENDANCE COUNTS
     ========================= */
 
-    // P + 0.5 from ½P
+    // Present + 0.5 from ½P
     totalPresent: {
       type: Number,
       default: 0,
     },
 
-    // A + missing days + 0.5 from ½P
+    // Absent + 0.5 from ½P
     totalAbsent: {
       type: Number,
       default: 0,
     },
 
-    totalLeaveTaken: {
+    // 🔥 NEW — Annual Leave Full (1 day each)
+    totalALF: {
       type: Number,
       default: 0,
     },
 
-    // Count of WO days
+    // 🔥 NEW — Annual Leave Half (0.5 salary impact each)
+    totalALH: {
+      type: Number,
+      default: 0,
+    },
+
+    // Weekly Off count
     totalWOCount: {
       type: Number,
       default: 0,
     },
 
-    // Count of HO days
+    // Holiday count
     totalHOCount: {
       type: Number,
       default: 0,
     },
 
-    // 🔥 28 / 29 / 30 / 31
+    // 🔥 Calendar days (28 / 29 / 30 / 31)
     totalDays: {
       type: Number,
       required: true,
@@ -94,7 +108,7 @@ const monthlySummarySchema = new mongoose.Schema(
 );
 
 /* =========================
-   INDEX
+   UNIQUE INDEX
 ========================= */
 
 monthlySummarySchema.index(
@@ -103,7 +117,7 @@ monthlySummarySchema.index(
 );
 
 /* =========================
-   HOOKS
+   AUTO UPDATE TIMESTAMP
 ========================= */
 
 monthlySummarySchema.pre('save', function (next) {

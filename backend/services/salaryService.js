@@ -2,8 +2,7 @@ const Salary = require('../models/Salary');
 const Employee = require('../models/Employee');
 const InputData = require('../models/InputData');
 const MonthlySummary = require('../models/MonthlySummary');
-const LeaveRequest = require('../models/LeaveRequest');
-const LeaveType = require('../models/LeaveType');
+const SalaryHistory = require('../models/SalaryHistory');
 const { safe, isManuallyProvided } = require('../utils/helpers');
 
 /**
@@ -274,94 +273,6 @@ if (isManuallyProvided(data.daysPaid, existingData.daysPaid)) {
  * @param {number} year - Year
  * @returns {Promise<Object>} - Leave data for salary calculation
  */
-const getApprovedLeavesForSalary = async (empId, month, year) => {
-  // Get start and end dates for the month
-  const monthStartDate = new Date(year, month - 1, 1);
-  const monthEndDate = new Date(year, month, 0, 23, 59, 59, 999);
-
-  // Find all approved leaves that overlap with this month
-  const approvedLeaves = await LeaveRequest.find({
-    empId,
-    status: 'approved',
-    $or: [
-      {
-        startDate: { $gte: monthStartDate, $lte: monthEndDate }
-      },
-      {
-        endDate: { $gte: monthStartDate, $lte: monthEndDate }
-      },
-      {
-        startDate: { $lte: monthStartDate },
-        endDate: { $gte: monthEndDate }
-      }
-    ]
-  });
-
-  let paidLeaveDays = 0;    // AL - Annual Leave (PAID)
-  let unpaidLeaveDays = 0;  // All others (UNPAID - deduct from salary)
-
-  const leaveDetails = {
-    al: 0,  // Annual Leave
-    pl: 0,  // Privilege Leave
-    cl: 0,  // Casual Leave
-    sl: 0,  // Sick Leave
-    ml: 0,  // Maternity Leave
-    pl_paternity: 0,  // Paternity Leave
-    bl: 0,  // Bereavement Leave
-    co: 0,  // Compensatory Off
-    lwp: 0  // Leave Without Pay
-  };
-
-  for (const leave of approvedLeaves) {
-    const leaveType = await LeaveType.findOne({ code: leave.leaveType });
-
-    if (!leaveType) continue;
-
-    // Calculate days that fall within this month
-    const leaveStart = leave.startDate < monthStartDate ? monthStartDate : leave.startDate;
-    const leaveEnd = leave.endDate > monthEndDate ? monthEndDate : leave.endDate;
-
-    // Simple day calculation (can be enhanced with working days logic)
-    const daysInMonth = Math.ceil((leaveEnd - leaveStart) / (1000 * 60 * 60 * 24)) + 1;
-    const effectiveDays = leave.isHalfDay ? 0.5 : daysInMonth;
-
-    // Categorize by leave type
-    const typeKey = leave.leaveType.toLowerCase().replace('_', '');
-    if (leaveDetails.hasOwnProperty(typeKey)) {
-      leaveDetails[typeKey] += effectiveDays;
-    }
-
-    // CRITICAL BUSINESS RULE: Only AL (Annual Leave) is PAID
-    // All other leave types are UNPAID and deducted from salary
-    if (leaveType.isPaid && leave.leaveType === 'AL') {
-      paidLeaveDays += effectiveDays;
-      console.log(`    ✅ PAID Leave: ${leave.leaveType} = ${effectiveDays} days`);
-    } else {
-      unpaidLeaveDays += effectiveDays;
-      console.log(`    💰 UNPAID Leave (LOP): ${leave.leaveType} = ${effectiveDays} days`);
-    }
-  }
-
-  // Mark leaves as applied to salary
-  if (approvedLeaves.length > 0) {
-    await LeaveRequest.updateMany(
-      { _id: { $in: approvedLeaves.map(l => l._id) } },
-      {
-        isAppliedToSalary: true,
-        salaryMonth: month,
-        salaryYear: year
-      }
-    );
-  }
-
-  return {
-    paidLeaveDays,
-    unpaidLeaveDays,
-    leaveDetails,
-    totalLeaveDays: paidLeaveDays + unpaidLeaveDays,
-    approvedLeaveCount: approvedLeaves.length
-  };
-};
 
 /**
  * Generate salary records from employee and summary data
@@ -369,7 +280,6 @@ const getApprovedLeavesForSalary = async (empId, month, year) => {
  * @returns {Promise<number>} - Number of records generated
  */
 const generateSalaryRecords = async () => {
-  console.log("💰 Deleting all existing salary records...");
 
   console.log("💰 Fetching employees, input data, and monthly summaries...");
   const employees = await Employee.find();
@@ -418,6 +328,10 @@ const generateSalaryRecords = async () => {
 
     // Use flexible matching to find InputData
     const input = findInputDataForEmployee(inputMap, inputData, empId) || {};
+    // 🔥 Fetch all salary history for this employee ONCE
+const salaryHistories = await SalaryHistory.find({ empId })
+  .sort({ effectiveFrom: 1 });
+
 
     // Log warning if InputData not found or has zero values
     if (!input.EmpID) {
@@ -429,7 +343,7 @@ const generateSalaryRecords = async () => {
       console.log(`  ✅ InputData found: CONSILESALARY=${input.CONSILESALARY}, Basic=${input.Basic}, HRA=${input.HRA}`);
     }
 
-    let carriedAL = 0;
+    // let carriedAL = 0;
 
     for (const summary of empSummaries) {
       const month = summary.month;
@@ -444,88 +358,128 @@ const generateSalaryRecords = async () => {
 });
 
 
-      // ===== LEAVE INTEGRATION =====
-      // Get approved leaves from Leave Management System
-      const leaveData = await getApprovedLeavesForSalary(empId, month, year);
-      console.log(`  📅 Leaves for ${month}/${year}: AL=${leaveData.leaveDetails.al}, LOP=${leaveData.unpaidLeaveDays}`);
+// ===== ANNUAL LEAVE FROM MONTHLY SUMMARY =====
 
-      // Calculate AL accrual (1 per month + 1 bonus per quarter)
-      let grantedAL = 1;
-      if (month % 3 === 0) grantedAL += 1; // Quarterly bonus (Mar, Jun, Sep, Dec)
-      const totalAL = carriedAL + grantedAL;
+// ALF = 1 day
+// ALH = 0.5 day
+const totalALF = safe(summary.totalALF || 0);
+const totalALH = safe(summary.totalALH || 0);
 
-      // AL consumed (only paid leave)
-const usedAL = existingSalary?.al ?? safe(leaveData.leaveDetails.al || 0);
-const lopDays = leaveData.unpaidLeaveDays;
+// Final paid Annual Leave
+const usedAL = totalALF + (totalALH * 0.5);
 
-
-      const remainingAL = Math.max(totalAL - usedAL, 0);
-
-
+// Attendance components
 const totalPresent = safe(summary.totalPresent);
 const totalWO = safe(summary.totalWOCount);
-const totalAbsent = safe(summary.totalAbsent);
 const totalHolidays = safe(summary.totalHOCount);
 
-// Total days in month
-const totalDaysInMonth =
-  totalPresent + totalWO + totalAbsent + totalHolidays;
+// Days Worked = Present + Weekly Off + Holidays
+const daysWorked = totalPresent + totalWO + totalHolidays;
 
-// Days worked (DO NOT subtract LOP again)
-const daysWorked =
-  totalPresent + totalWO + totalHolidays;
+// Total Days must come from payroll cycle
+const totalDaysInMonth = safe(summary.totalDays);
+
+// ===== LOP CALCULATION =====
+// LOP = Total Days - (Worked + Paid Leave)
+let lopDays = totalDaysInMonth - (daysWorked + usedAL);
+
+if (lopDays < 0) lopDays = 0;
+
+// ===============================
+// 🔥 GET CORRECT SALARY HISTORY
+// ===============================
+// 🔥 Find applicable salary history without DB query
+let salaryHistoryEntry = null;
+const targetDate = new Date(year, month - 1, 1);
+
+for (const history of salaryHistories) {
+  if (
+    history.effectiveFrom <= targetDate &&
+    (!history.effectiveTo || history.effectiveTo >= targetDate)
+  ) {
+    salaryHistoryEntry = history;
+  }
+}
 
 
-console.log(
-  `📊 Day breakdown: Total=${totalDaysInMonth}, Present=${totalPresent}, WO=${totalWO}, Holidays=${totalHolidays}, Absent=${totalAbsent}, LOP=${lopDays}, Worked=${daysWorked}`
+// Use SalaryHistory if exists, otherwise fallback to InputData
+const consileSalary = safe(
+  salaryHistoryEntry?.consileSalary ?? input.CONSILESALARY ?? 0
 );
 
+const basic = safe(
+  salaryHistoryEntry?.basic ?? input.Basic ?? 0
+);
 
-      const base = {
-        empId,
-        empName: emp.empName,
-        department: emp.department,
-        designation: emp.designation,
-        dob: emp.dob,
-        doj: emp.doj,
-        year,
-        month: monthName,
-        monthNumber: month,
-        totalDays: totalDaysInMonth,
-        daysWorked: daysWorked,
+const hra = safe(
+  salaryHistoryEntry?.hra ?? input.HRA ?? 0
+);
 
-        // Leave fields - from Leave Management System
-        al: usedAL,  // Annual Leave (PAID) - doesn't affect salary
-        pl: safe(leaveData.leaveDetails.pl || 0),  // Privilege Leave (UNPAID)
-        blOrMl: safe((leaveData.leaveDetails.ml || 0) + (leaveData.leaveDetails.bl || 0)),  // ML + BL (UNPAID)
-        lop: lopDays,  // Loss of Pay = ALL unpaid leaves (PL + ML + BL + CL + SL + LWP)
+const cca = safe(
+  salaryHistoryEntry?.cca ?? input.CCA ?? 0
+);
 
-        // Additional leave detail fields
-        cl: safe(leaveData.leaveDetails.cl || 0),  // Casual Leave (UNPAID)
-        sl: safe(leaveData.leaveDetails.sl || 0),  // Sick Leave (UNPAID)
-        lwp: safe(leaveData.leaveDetails.lwp || 0),  // Leave Without Pay
+const trpAlw = safe(
+  salaryHistoryEntry?.trpAlw ?? input.TRP_ALW ?? 0
+);
 
-        // Salary components
-        consileSalary: safe(input.CONSILESALARY),
-        basic: safe(input.Basic),
-        hra: safe(input.HRA),
-        cca: safe(input.CCA),
-        transportAllowance: safe(input.TRP_ALW),
-        otherAllowance1: safe(input.O_ALW1),
-        plb: safe(input.PLB),
-        tds: safe(input.TDS),
-        actualCTCWithoutLOP: safe(input.ActualCTCWithoutLossOfPay || 0),
+const oAlw1 = safe(
+  salaryHistoryEntry?.oAlw1 ?? input.O_ALW1 ?? 0
+);
 
-        // For reference
-        annualLeaves: totalAL,
-        usedAL,
-        carriedAL: remainingAL
-      };
+const actualCTC = safe(
+  salaryHistoryEntry?.actualCTC ?? input.ActualCTCWithoutLossOfPay ?? 0
+);
 
-      const computed = computeDerivedFields(base, existingSalary || {});
-      allDocs.push({ ...base, ...computed });
+console.log(
+  `📊 ${empId} ${monthName}-${year} | Total=${totalDaysInMonth}, Worked=${daysWorked}, AL=${usedAL}, LOP=${lopDays}, CTC=${actualCTC}`
+);
 
-      carriedAL = remainingAL;
+// ===============================
+// BASE OBJECT
+// ===============================
+
+const base = {
+  empId,
+  empName: emp.empName,
+  department: emp.department,
+  designation: emp.designation,
+  dob: emp.dob,
+  doj: emp.doj,
+
+  year,
+  month: monthName,
+  monthNumber: month,
+
+  // Attendance
+  totalDays: totalDaysInMonth,
+  daysWorked,
+
+  // Paid Leave
+  al: usedAL,
+
+  // Unpaid Leave
+  lop: lopDays,
+
+  // Salary components (timeline-safe)
+  consileSalary,
+  basic,
+  hra,
+  cca,
+  transportAllowance: trpAlw,
+  otherAllowance1: oAlw1,
+
+  plb: safe(input.PLB),
+  tds: safe(input.TDS),
+
+  actualCTCWithoutLOP: actualCTC
+};
+
+const computed = computeDerivedFields(base, existingSalary || {});
+allDocs.push({ ...base, ...computed });
+
+
+      // carriedAL = remainingAL;
     }
   }
 
@@ -657,7 +611,6 @@ const getSalaryByEmpAndMonth = async (empId, year, month) => {
 module.exports = {
   computeDerivedFields,
   generateSalaryRecords,
-  getApprovedLeavesForSalary,
   createSalary,
   updateSalary,
   getAllSalaries,

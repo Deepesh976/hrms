@@ -1,0 +1,140 @@
+/* Mobile responsive styles for Employee Payslip */
+
+@media (max-width: 768px) {
+  .payslip-container {
+    padding: 1rem !important;
+    padding-top: 80px !important;
+  }
+
+  .payslip-header {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .payslip-title {
+    font-size: 1.5rem !important;
+  }
+
+  .payslip-subtitle {
+    font-size: 0.95rem !important;
+  }
+
+  .payslip-main-card {
+    padding: 1.25rem !important;
+  }
+
+  .payslip-employee-info {
+    padding: 1rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .payslip-employee-info h3 {
+    font-size: 1rem !important;
+  }
+
+  .payslip-info-row {
+    font-size: 0.9rem !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+
+  .payslip-form-section {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .payslip-section-title {
+    font-size: 1rem !important;
+  }
+
+  .payslip-input-group {
+    margin-bottom: 1rem !important;
+  }
+
+  .payslip-select {
+    font-size: 0.9rem !important;
+    padding: 0.65rem !important;
+  }
+
+  .payslip-generate-btn {
+    width: 100% !important;
+    padding: 0.75rem 1.5rem !important;
+    font-size: 0.95rem !important;
+  }
+
+  .payslip-history-section {
+    margin-top: 2rem !important;
+  }
+
+  .payslip-slips-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .payslip-card {
+    padding: 1.25rem !important;
+  }
+
+  .payslip-card-header {
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .payslip-period {
+    gap: 0.5rem !important;
+  }
+
+  .payslip-month-year {
+    font-size: 1.1rem !important;
+  }
+
+  .payslip-year-badge {
+    padding: 0.3rem 0.6rem !important;
+    font-size: 0.8rem !important;
+  }
+
+  .payslip-actions {
+    gap: 0.4rem !important;
+  }
+
+  .payslip-action-btn {
+    padding: 0.5rem 0.8rem !important;
+    font-size: 0.85rem !important;
+    flex: 1 1 auto !important;
+    min-width: calc(50% - 0.2rem) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .payslip-container {
+    padding: 0.75rem !important;
+    padding-top: 70px !important;
+  }
+
+  .payslip-main-card {
+    padding: 1rem !important;
+    margin: 0 !important;
+    border-radius: 8px !important;
+  }
+
+  .payslip-title {
+    font-size: 1.25rem !important;
+  }
+
+  .payslip-employee-info {
+    padding: 0.75rem !important;
+  }
+
+  .payslip-card {
+    padding: 1rem !important;
+    border-radius: 10px !important;
+  }
+
+  .payslip-actions {
+    flex-direction: column !important;
+  }
+
+  .payslip-action-btn {
+    width: 100% !important;
+    min-width: auto !important;
+  }
+}

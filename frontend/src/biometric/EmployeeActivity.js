@@ -445,15 +445,16 @@ bVal = new Date(b.date).getTime();
     setCurrentPage(1);
   };
 
-  const getStatusColor = (status) => {
-    const colors = {
-      'P': '#10b981',
-      'A': '#ef4444',
-      '½P': '#f59e0b',
-      'WO': '#8b5cf6',
-      'HO': '#3b82f6',
-      'L': '#a855f7'
-    };
+const getStatusColor = (status) => {
+  const colors = {
+    'P': '#10b981',
+    'A': '#ef4444',
+    '½P': '#f59e0b',
+    'WO': '#8b5cf6',
+    'HO': '#3b82f6',
+    'ALF': '#9333ea',
+    'ALH': '#c084fc'
+  };
     return colors[status] || '#6b7280';
   };
 
@@ -535,17 +536,20 @@ bVal = new Date(b.date).getTime();
               onChange={(e) => handleFilterChange('empName', e.target.value)}
             />
 
-            <select
-              value={filters.status}
-              onChange={(e) => handleFilterChange('status', e.target.value)}
-            >
-              <option value="">All</option>
-              <option value="P">P</option>
-              <option value="½P">½P</option>
-              <option value="A">A</option>
-              <option value="WO">WO</option>
-              <option value="HO">HO</option>
-            </select>
+<select
+  value={filters.status}
+  onChange={(e) => handleFilterChange('status', e.target.value)}
+>
+  <option value="">All</option>
+  <option value="P">P</option>
+  <option value="½P">½P</option>
+  <option value="A">A</option>
+  <option value="WO">WO</option>
+  <option value="HO">HO</option>
+  <option value="ALF">ALF</option>
+  <option value="ALH">ALH</option>
+</select>
+
 
             <input
               type="date"
@@ -621,19 +625,23 @@ bVal = new Date(b.date).getTime();
   !['HO', 'WO'].includes(item.status) &&
   openStatusEditModal(item)
 }
-      title={
-        item.status === 'HO'
-          ? 'Holiday'
-          : item.status === 'WO'
-          ? 'Weekly Off'
-          : item.status === 'A'
-          ? 'Absent'
-          : item.status === '½P'
-          ? 'Half Day'
-          : item.status === 'P'
-          ? 'Present'
-          : ''
-      }
+title={
+  item.status === 'HO'
+    ? 'Holiday'
+    : item.status === 'WO'
+    ? 'Weekly Off'
+    : item.status === 'A'
+    ? 'Absent'
+    : item.status === '½P'
+    ? 'Half Day'
+    : item.status === 'P'
+    ? 'Present'
+    : item.status === 'ALF'
+    ? 'Annual Leave Full'
+    : item.status === 'ALH'
+    ? 'Annual Leave Half'
+    : ''
+}
     >
       {item.status}
     </span>
@@ -768,12 +776,14 @@ bVal = new Date(b.date).getTime();
                 value={newStatus}
                 onChange={(e) => setNewStatus(e.target.value)}
               >
-                <option value="P">Present</option>
-                <option value="½P">Half Day</option>
-                <option value="A">Absent</option>
-                <option value="WO">Weekly Off</option>
-                <option value="HO">Holiday</option>
-                <option value="L">Leave</option>
+<option value="P">Present</option>
+<option value="½P">Half Day</option>
+<option value="A">Absent</option>
+<option value="WO">Weekly Off</option>
+<option value="HO">Holiday</option>
+<option value="ALF">Annual Leave Full</option>
+<option value="ALH">Annual Leave Half</option>
+
               </select>
             </div>
 
@@ -1007,14 +1017,6 @@ bVal = new Date(b.date).getTime();
               </p>
             </div>
 
-            {/* Leaves */}
-            <div style={{ padding: '14px', border: '2px solid #e9d5ff', background: '#faf5ff', borderRadius: '8px', textAlign: 'center' }}>
-              <p style={{ fontSize: '11px', fontWeight: '700', color: '#6b21a8' }}>LEAVES</p>
-              <p style={{ fontSize: '28px', fontWeight: '800', color: '#a855f7' }}>
-                {summaryData.totalLeaveTaken ?? 0}
-              </p>
-            </div>
-
             {/* Weekly Off */}
             <div style={{ padding: '14px', border: '2px solid #ddd6fe', background: '#f5f3ff', borderRadius: '8px', textAlign: 'center' }}>
               <p style={{ fontSize: '11px', fontWeight: '700', color: '#5b21b6' }}>WEEKLY OFF</p>
@@ -1030,14 +1032,26 @@ bVal = new Date(b.date).getTime();
                 {summaryData.totalHOCount ?? 0}
               </p>
             </div>
+            {/* Annual Leave Full */}
+<div style={{ padding: '14px', border: '2px solid #e9d5ff', background: '#faf5ff', borderRadius: '8px', textAlign: 'center' }}>
+  <p style={{ fontSize: '11px', fontWeight: '700', color: '#6b21a8' }}>
+    ANNUAL LEAVE FULL
+  </p>
+  <p style={{ fontSize: '28px', fontWeight: '800', color: '#9333ea' }}>
+    {summaryData.totalALF ?? 0}
+  </p>
+</div>
 
-            {/* Days Worked */}
-            <div style={{ padding: '14px', border: '2px solid #bbf7d0', background: '#ecfeff', borderRadius: '8px', textAlign: 'center' }}>
-              <p style={{ fontSize: '11px', fontWeight: '700', color: '#065f46' }}>DAYS WORKED</p>
-              <p style={{ fontSize: '28px', fontWeight: '800', color: '#059669' }}>
-                {summaryData.daysWorked ?? 0}
-              </p>
-            </div>
+{/* Annual Leave Half */}
+<div style={{ padding: '14px', border: '2px solid #ddd6fe', background: '#f5f3ff', borderRadius: '8px', textAlign: 'center' }}>
+  <p style={{ fontSize: '11px', fontWeight: '700', color: '#5b21b6' }}>
+    ANNUAL LEAVE HALF
+  </p>
+  <p style={{ fontSize: '28px', fontWeight: '800', color: '#7c3aed' }}>
+    {summaryData.totalALH ?? 0}
+  </p>
+</div>
+
           </div>
         </div>
       ) : (

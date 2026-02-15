@@ -17,7 +17,7 @@ const MonthlySummaryPage = () => {
   const [notFoundShown, setNotFoundShown] = useState(false);
 
   /* =====================================================
-     🔐 ROLE GUARD (HOD & DIRECTOR BLOCKED)
+     🔐 ROLE GUARD
   ===================================================== */
   useEffect(() => {
     if (['hod', 'director'].includes(role)) {
@@ -36,7 +36,7 @@ const MonthlySummaryPage = () => {
     d.setHours(0, 0, 0, 0);
 
     let year = d.getFullYear();
-    let month = d.getMonth() + 1; // 1–12
+    let month = d.getMonth() + 1;
 
     if (d.getDate() < 21) {
       month -= 1;
@@ -73,13 +73,11 @@ const MonthlySummaryPage = () => {
       let summaryData = null;
 
       if (res.data?.success && res.data.data) {
-        if (Array.isArray(res.data.data)) {
-          summaryData = res.data.data.find(
-            (s) => Number(s.year) === year && Number(s.month) === month
-          );
-        } else {
-          summaryData = res.data.data;
-        }
+        summaryData = Array.isArray(res.data.data)
+          ? res.data.data.find(
+              (s) => Number(s.year) === year && Number(s.month) === month
+            )
+          : res.data.data;
       }
 
       if (summaryData) {
@@ -128,6 +126,12 @@ const MonthlySummaryPage = () => {
   };
 
   /* =====================================================
+     DERIVED VALUES
+  ===================================================== */
+  const totalAL =
+    (summary?.totalALF || 0) + (summary?.totalALH || 0) * 0.5;
+
+  /* =====================================================
      RENDER
   ===================================================== */
   return (
@@ -157,7 +161,11 @@ const MonthlySummaryPage = () => {
           <div style={styles.grid}>
             <div><b>Present:</b> {summary.totalPresent ?? 0}</div>
             <div><b>Absent:</b> {summary.totalAbsent ?? 0}</div>
-            <div><b>Leave:</b> {summary.totalLeaveTaken ?? 0}</div>
+
+            <div><b>Annual Leave Full:</b> {summary.totalALF ?? 0}</div>
+            <div><b>Annual Leave Half:</b> {summary.totalALH ?? 0}</div>
+            <div><b>Total AL (Salary Impact):</b> {totalAL}</div>
+
             <div><b>Weekly Off:</b> {summary.totalWOCount ?? 0}</div>
             <div><b>Holiday:</b> {summary.totalHOCount ?? 0}</div>
             <div><b>Total Days:</b> {summary.totalDays ?? 0}</div>
@@ -204,7 +212,7 @@ const styles = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
     gap: 12,
   },
   empty: {

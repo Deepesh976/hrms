@@ -4,6 +4,7 @@ const MonthlySummary = require('../../models/MonthlySummary');
    PAYROLL CYCLE HELPERS
    Cycle = 21st → 20th
 ========================================================= */
+
 const getPayrollCycleKey = (date) => {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
@@ -12,8 +13,8 @@ const getPayrollCycleKey = (date) => {
     d.setMonth(d.getMonth() - 1);
   }
 
-  d.setDate(21); // lock to cycle start
-  return d.toISOString().slice(0, 10); // yyyy-mm-21
+  d.setDate(21);
+  return d.toISOString().slice(0, 10);
 };
 
 const getCycleMetaFromKey = (cycleKey) => {
@@ -28,20 +29,19 @@ const getCycleMetaFromKey = (cycleKey) => {
   const year = cycleStart.getFullYear();
   const month = cycleStart.getMonth() + 1;
 
-  const totalDays =
-    Math.round((cycleEnd - cycleStart) / (1000 * 60 * 60 * 24)) + 1;
-
-  return { year, month, cycleStart, cycleEnd, totalDays };
+  return { year, month, cycleStart, cycleEnd };
 };
 
 /* =========================================================
-   CALCULATE MONTHLY SUMMARY (FINAL – PAYROLL SAFE)
+   CALCULATE MONTHLY SUMMARY (SUPER SIMPLE VERSION)
+   totalDays = P + A + WO + HO + ALF + ALH
 ========================================================= */
+
 const calculateMonthlySummary = (empId, empName, activities) => {
   if (!activities || !activities.length) return null;
 
   /* =========================
-     1️⃣ GROUP BY PAYROLL CYCLE
+     GROUP BY PAYROLL CYCLE
   ========================= */
   const cycleMap = {};
 
@@ -51,24 +51,24 @@ const calculateMonthlySummary = (empId, empName, activities) => {
     cycleMap[key].push(act);
   }
 
-  /* =========================
-     2️⃣ ONLY ONE CYCLE EXPECTED
-     (caller already groups)
-  ========================= */
   const cycleKey = Object.keys(cycleMap)[0];
   if (!cycleKey) return null;
 
   const cycleActs = cycleMap[cycleKey];
 
+  /* =========================
+     COUNTERS
+  ========================= */
   let totalPresent = 0;
   let totalAbsent = 0;
-  let totalLeaveTaken = 0;
+  let totalALF = 0;
+  let totalALH = 0;
   let totalWOCount = 0;
   let totalHOCount = 0;
   let weeklyOffPresent = 0;
 
   /* =========================
-     3️⃣ AGGREGATE DAY BY DAY
+     COUNT STATUS
   ========================= */
   for (const act of cycleActs) {
     switch (act.status) {
@@ -85,14 +85,17 @@ const calculateMonthlySummary = (empId, empName, activities) => {
         totalAbsent += 1;
         break;
 
-      case 'L':
-        totalLeaveTaken += 1;
-        totalAbsent += 1;
+      case 'ALF':
+        totalALF += 1;
+        break;
+
+      case 'ALH':
+        totalALH += 1;
         break;
 
       case 'WO':
         totalWOCount += 1;
-        // weekly off worked
+
         if (act.timeInActual && act.timeInActual !== '00:00:00') {
           weeklyOffPresent += 1;
         }
@@ -107,17 +110,32 @@ const calculateMonthlySummary = (empId, empName, activities) => {
     }
   }
 
-  const {
-    year,
-    month,
-    cycleStart,
-    cycleEnd,
-    totalDays,
-  } = getCycleMetaFromKey(cycleKey);
+  /* =========================
+     META
+  ========================= */
+  const { year, month, cycleStart, cycleEnd } =
+    getCycleMetaFromKey(cycleKey);
+
+  /* =========================================================
+     🔥 FINAL TOTAL DAYS (VERY SIMPLE)
+  ========================================================= */
+  const totalDays =
+    totalPresent +
+    totalAbsent +
+    totalWOCount +
+    totalHOCount +
+    totalALF +
+    totalALH;
 
   /* =========================
-     4️⃣ FINAL SUMMARY OBJECT
+     Days Worked (salary logic)
+     AL not included here
   ========================= */
+  const daysWorked =
+    totalPresent +
+    totalWOCount +
+    totalHOCount;
+
   return {
     empId,
     empName,
@@ -126,23 +144,27 @@ const calculateMonthlySummary = (empId, empName, activities) => {
     month,
     cycleStart,
     cycleEnd,
-    totalDays,
+
+    totalDays,        // ✅ Now will show 30 correctly
 
     totalPresent,
     totalAbsent,
-    totalLeaveTaken,
+
+    totalALF,
+    totalALH,
+
     totalWOCount,
     totalHOCount,
     weeklyOffPresent,
 
-    // derived (used by salary)
-    daysWorked: totalPresent + totalWOCount + totalHOCount,
+    daysWorked,
   };
 };
 
 /* =========================================================
-   SAVE SUMMARY (UPSERT – ONE PER EMP PER CYCLE)
+   SAVE SUMMARY
 ========================================================= */
+
 const saveMonthlySummary = async (summary) => {
   if (!summary) return null;
 

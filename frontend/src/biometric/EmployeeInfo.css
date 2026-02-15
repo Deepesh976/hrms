@@ -190,23 +190,32 @@
   overflow-x: auto;
   max-height: 600px;
   overflow-y: auto;
+  position: relative;
 }
 
 .employee-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.9rem;
+  position: relative;
+}
+
+.employee-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .employee-table thead tr {
   background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  position: relative;
+  z-index: 100;
 }
 
 .employee-table th {
-  padding: 1rem 1rem;
+  padding: 1.1rem 1rem;
   text-align: left;
   font-weight: 700;
   color: #e2e8f0;
@@ -214,7 +223,13 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
-  border-bottom: 2px solid #475569;
+  border-bottom: 3px solid #475569;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  line-height: 1.2;
 }
 
 .employee-table th:first-child {
@@ -223,7 +238,7 @@
 }
 
 .employee-table td {
-  padding: 0.85rem 1rem;
+  padding: 0.9rem 1rem;
   border-bottom: 1px solid #e2e8f0;
   color: #334155;
   text-align: left;
@@ -231,11 +246,16 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  background: white;
 }
 
 .employee-table tbody tr {
   transition: all 0.2s ease;
   background: white;
+  position: relative;
+  z-index: 1;
+  height: auto;
+  line-height: 1.4;
 }
 
 .employee-table tbody tr:hover {
@@ -459,6 +479,22 @@
 
   .table-wrapper {
     max-height: 400px;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .employee-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .employee-table th {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   .employee-table th,
@@ -514,6 +550,26 @@
   .btn {
     padding: 0.45rem 0.7rem;
     font-size: 0.7rem;
+  }
+
+  .table-wrapper {
+    max-height: 350px;
+    overflow-y: auto;
+    position: relative;
+  }
+
+  .employee-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .employee-table th {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
 
   .employee-table th,

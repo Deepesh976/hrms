@@ -13,6 +13,30 @@ const responsiveStyles = `
     padding-top: 80px !important;
   }
 
+  /* Date input placeholder styling */
+  input[type="date"]::placeholder {
+    color: #94a3b8;
+    font-weight: 500;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    color: #2563eb;
+  }
+
+  /* Make date inputs more visible */
+  input[type="date"] {
+    color-scheme: light;
+  }
+
+  input[type="date"]:valid {
+    color: #1e293b;
+  }
+
+  input[type="date"]:invalid {
+    color: #94a3b8;
+  }
+
   @media (max-width: 1024px) {
     .leave-form-row {
       grid-template-columns: repeat(2, 1fr) !important;
@@ -102,6 +126,25 @@ const responsiveStyles = `
     .input, .textarea {
       padding: 0.75rem 1rem !important;
       font-size: 0.9rem !important;
+    }
+    input[type="date"] {
+      padding: 0.85rem 1rem !important;
+      font-size: 1rem !important;
+      background-color: #fff !important;
+      width: 100% !important;
+    }
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      width: 36px;
+      height: 36px;
+      padding: 2px;
+      cursor: pointer;
+    }
+    .form-group {
+      margin-bottom: 0.5rem !important;
+    }
+    .form-group input[type="date"]:empty::before {
+      content: "YYYY-MM-DD";
+      color: #94a3b8;
     }
     .checkbox-wrapper {
       padding: 0.75rem !important;
@@ -623,6 +666,7 @@ const EmployeeLeaveRequest = () => {
                     <label style={styles.label}>Start Date</label>
                     <input
                       type="date"
+                      placeholder="YYYY-MM-DD"
                       value={form.startDate}
                       onChange={(e) => setForm({ ...form, startDate: e.target.value })}
                       style={focusedInput === 'startDate' ? { ...styles.input, ...styles.inputFocus } : styles.input}
@@ -636,6 +680,7 @@ const EmployeeLeaveRequest = () => {
                     <label style={styles.label}>End Date</label>
                     <input
                       type="date"
+                      placeholder="YYYY-MM-DD"
                       value={form.endDate}
                       onChange={(e) => setForm({ ...form, endDate: e.target.value })}
                       style={focusedInput === 'endDate' ? { ...styles.input, ...styles.inputFocus } : styles.input}
