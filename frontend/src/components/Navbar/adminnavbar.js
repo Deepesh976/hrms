@@ -249,7 +249,7 @@ const menuItems = [
   { path: '/manage-hods', label: 'Manage HODs', icon: FaUser },
   { path: '/manage-directors', label: 'Manage Directors', icon: FaUser },
   { path: '/hr-leave-requests', label: 'Leave Approvals', icon: FaCheckCircle },
-  { path: '/create-assets', label: 'Create Assets', icon: FaBox },
+  { path: '/hr-leave-calendar', label: 'Leave Calendar', icon: FaCheckCircle },
   { path: '/manage-passwords', label: 'Manage Passwords', icon: FaKey },
 ];
 
@@ -310,7 +310,7 @@ const AdminNavbar = () => {
           </div>
 
           <div className="admin-brand" style={styles.brand} role="heading">
-            HR Admin
+            HRMS
           </div>
 
           <div className="admin-right-section" style={styles.rightSection}>

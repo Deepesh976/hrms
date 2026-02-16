@@ -388,9 +388,16 @@ if (lopDays < 0) lopDays = 0;
 // ===============================
 // 🔥 GET CORRECT SALARY HISTORY
 // ===============================
-// 🔥 Find applicable salary history without DB query
+
 let salaryHistoryEntry = null;
-const targetDate = new Date(year, month - 1, 1);
+
+// Payroll cycle start = 21st of previous month
+const payrollCycleStart =
+  month === 1
+    ? new Date(year - 1, 11, 21)
+    : new Date(year, month - 2, 21);
+
+const targetDate = payrollCycleStart;
 
 for (const history of salaryHistories) {
   if (
@@ -400,6 +407,7 @@ for (const history of salaryHistories) {
     salaryHistoryEntry = history;
   }
 }
+
 
 
 // Use SalaryHistory if exists, otherwise fallback to InputData

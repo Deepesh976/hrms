@@ -37,6 +37,22 @@ const getMonthName = (monthNumber) => {
   return months[monthNumber - 1];
 };
 
+/* =========================================
+   🔥 ADD THIS RIGHT HERE
+========================================= */
+
+const getCycleEndMonth = (year, monthNumber) => {
+  const cycleStart = new Date(year, monthNumber - 1, 21);
+  const cycleEnd = new Date(cycleStart);
+  cycleEnd.setMonth(cycleEnd.getMonth() + 1);
+  cycleEnd.setDate(20);
+
+  return {
+    month: cycleEnd.getMonth() + 1,
+    year: cycleEnd.getFullYear(),
+  };
+};
+
 // Helper function to convert month name to number
 const getMonthNumberFromName = (monthName) => {
   const months = {
@@ -494,6 +510,9 @@ exports.generateMySlip = async (req, res) => {
         ? getMonthNumberFromName(month)
         : parseInt(month, 10);
 
+    const cycleMeta = getCycleEndMonth(parseInt(year, 10), monthNumber);
+
+
     // Check if slip already exists for this month/year
     const existingSlip = await Slip.findOne({
       empId,
@@ -568,8 +587,8 @@ exports.generateMySlip = async (req, res) => {
       plMlBl: (salary.pl || 0) + (salary.blOrMl || 0),
       earnings,
       deductions,
-      month: monthNumber,
-      year: parseInt(year, 10)
+      month: cycleMeta.month,
+      year: cycleMeta.year
     });
 
     await slip.save();

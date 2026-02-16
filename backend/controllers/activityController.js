@@ -285,41 +285,85 @@ const updateActivityStatus = async (req, res) => {
     activity.statusChangeDate = new Date();
     activity.isStatusModified = true;
 
-    await activity.save();
+await activity.save();
 
-    /* ======================================================
-       🔥 REGENERATE MONTHLY SUMMARY (ATTENDANCE ONLY)
-       ❌ NO SALARY GENERATION HERE
-    ====================================================== */
-    const activities = await Activity.find({
-      empId: activity.empId,
-    }).sort({ date: 1 });
 
-    const summaries = calculateMonthlySummary(
-      activity.empId,
-      activity.empName,
-      activities
-    );
+// 🔥 Recalculate correct payroll cycle summary
+await generateMonthlySummaryForCycle(activity.date);
 
-    if (Array.isArray(summaries) && summaries.length) {
-      for (const summary of summaries) {
-        await saveMonthlySummary(summary);
-      }
-    }
+return res.json({
+  success: true,
+  message: 'Status updated & monthly summary refreshed',
+  activity,
+});
+// ==========================================
+// 🔥 REGENERATE MONTHLY SUMMARY (CORRECT WAY)
+// ==========================================
 
-    return res.json({
-      success: true,
-      message: 'Status updated & monthly summary refreshed',
-      activity,
-    });
-  } catch (err) {
-    console.error('❌ updateActivityStatus error:', err);
-    res.status(500).json({
-      success: false,
-      message: err.message,
-    });
+const activityDate = new Date(activity.date);
+activityDate.setHours(0, 0, 0, 0);
+
+let cycleStartYear = activityDate.getFullYear();
+let cycleStartMonth = activityDate.getMonth() + 1;
+
+if (activityDate.getDate() < 21) {
+  cycleStartMonth -= 1;
+  if (cycleStartMonth === 0) {
+    cycleStartMonth = 12;
+    cycleStartYear -= 1;
   }
+}
+
+const startDate = new Date(
+  cycleStartYear,
+  cycleStartMonth - 1,
+  21,
+  0, 0, 0, 0
+);
+
+const endDate = new Date(
+  cycleStartYear,
+  cycleStartMonth,
+  20,
+  23, 59, 59, 999
+);
+
+// Fetch only this employee in this payroll cycle
+const cycleActivities = await Activity.find({
+  empId: activity.empId,
+  date: { $gte: startDate, $lte: endDate }
+}).sort({ date: 1 });
+
+if (cycleActivities.length) {
+  const summary = calculateMonthlySummary(
+    activity.empId,
+    activity.empName,
+    cycleActivities
+  );
+
+  if (summary) {
+    await saveMonthlySummary(summary);
+    console.log(
+      `✅ Monthly summary updated for ${activity.empId} | ${summary.month}/${summary.year}`
+    );
+  }
+}
+
+return res.status(200).json({
+  success: true,
+  message: 'Status updated & monthly summary refreshed',
+  activity,
+});
+
+} catch (err) {
+  console.error('❌ updateActivityStatus error:', err);
+  return res.status(500).json({
+    success: false,
+    message: err.message,
+  });
+}
 };
+
 
 
 /* ======================================================

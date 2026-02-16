@@ -706,7 +706,7 @@ const EmployeeLeaveRequest = () => {
                         ))
                       ) : (
                         <>
-                          <option value="AL">Annual Leave</option>
+                          {/* <option value="AL">Annual Leave</option> */}
                           <option value="CL">Casual Leave</option>
                           <option value="BTL">Business Trip Leave</option>
                         </>

@@ -28,6 +28,7 @@ const MonthlySummaryPage = () => {
 
   /* =====================================================
      PAYROLL CYCLE HELPER (21 → 20)
+     🔥 Payroll month = cycle END month
   ===================================================== */
   const getPayrollCycleFromDate = (dateStr) => {
     const d = new Date(dateStr);
@@ -38,11 +39,12 @@ const MonthlySummaryPage = () => {
     let year = d.getFullYear();
     let month = d.getMonth() + 1;
 
-    if (d.getDate() < 21) {
-      month -= 1;
-      if (month === 0) {
-        month = 12;
-        year -= 1;
+    // If date is 21 or later → next month payroll
+    if (d.getDate() >= 21) {
+      month += 1;
+      if (month > 12) {
+        month = 1;
+        year += 1;
       }
     }
 
@@ -61,27 +63,38 @@ const MonthlySummaryPage = () => {
       const cycle = getPayrollCycleFromDate(dateParam);
       if (!cycle) {
         toast.error('Invalid payroll date');
+        setLoading(false);
         return;
       }
 
       const { year, month } = cycle;
 
+      console.log('🔎 Requesting:', { empId, year, month });
+
       const res = await axios.get(
         `/monthly-summary/employee/${empId}?year=${year}&month=${month}`
       );
 
-      let summaryData = null;
+      console.log('📦 Response:', res.data);
 
-      if (res.data?.success && res.data.data) {
-        summaryData = Array.isArray(res.data.data)
-          ? res.data.data.find(
-              (s) => Number(s.year) === year && Number(s.month) === month
-            )
-          : res.data.data;
+      let summaryObj = null;
+
+      // Case 1: { success: true, data: {...} }
+      if (res.data?.success) {
+        summaryObj = res.data.data;
+      }
+      // Case 2: Direct object
+      else if (res.data && typeof res.data === 'object') {
+        summaryObj = res.data;
       }
 
-      if (summaryData) {
-        setSummary(summaryData);
+      // 🔥 Strict validation (prevents wrong-month mismatch)
+      if (
+        summaryObj &&
+        Number(summaryObj.year) === Number(year) &&
+        Number(summaryObj.month) === Number(month)
+      ) {
+        setSummary(summaryObj);
         setNotFoundShown(false);
       } else {
         setSummary(null);
@@ -90,8 +103,9 @@ const MonthlySummaryPage = () => {
           setNotFoundShown(true);
         }
       }
+
     } catch (err) {
-      console.error('Monthly summary fetch failed:', err);
+      console.error('❌ Monthly summary fetch failed:', err);
       toast.error('Failed to load monthly summary');
       setSummary(null);
     } finally {
@@ -125,9 +139,6 @@ const MonthlySummaryPage = () => {
     return `${formatDate(summary.cycleStart)} – ${formatDate(summary.cycleEnd)}`;
   };
 
-  /* =====================================================
-     DERIVED VALUES
-  ===================================================== */
   const totalAL =
     (summary?.totalALF || 0) + (summary?.totalALH || 0) * 0.5;
 

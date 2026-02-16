@@ -273,9 +273,40 @@ const deleteSalaryHistory = async (req, res) => {
   }
 };
 
+const repairAllSalaryHistory = async (req, res) => {
+  try {
+    const histories = await SalaryHistory.find({});
+
+    let count = 0;
+
+    for (const entry of histories) {
+      if (!entry.consileSalary || entry.consileSalary === 0) {
+
+        const breakdown = calculateSalaryBreakdown(entry.actualCTC);
+
+        entry.consileSalary = breakdown.consileSalary;
+        entry.basic = breakdown.basic;
+        entry.hra = breakdown.hra;
+        entry.cca = breakdown.cca;
+        entry.trpAlw = breakdown.trpAlw;
+        entry.oAlw1 = breakdown.oAlw1;
+
+        await entry.save();
+        count++;
+      }
+    }
+
+    res.json({ message: `${count} records repaired successfully` });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   getSalaryHistoryByEmpId,
   addSalaryRevision,
   updateSalaryHistory,
-  deleteSalaryHistory
+  deleteSalaryHistory,
+  repairAllSalaryHistory
 };

@@ -323,68 +323,81 @@ bVal = new Date(b.date).getTime();
     }
   };
 
-  const getPayrollCycleFromDate = (dateStr) => {
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return null;
-    d.setHours(0, 0, 0, 0);
-    let year = d.getFullYear();
-    let month = d.getMonth() + 1;
-    if (d.getDate() < 21) {
-      month -= 1;
-      if (month === 0) {
-        month = 12;
-        year -= 1;
-      }
+const getPayrollCycleFromDate = (dateStr) => {
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return null;
+
+  d.setHours(0, 0, 0, 0);
+
+  let year = d.getFullYear();
+  let month = d.getMonth() + 1;
+
+  // 🔥 If date is 21 or later → payroll month is NEXT month
+  if (d.getDate() >= 21) {
+    month += 1;
+    if (month > 12) {
+      month = 1;
+      year += 1;
     }
-    return { year, month };
-  };
+  }
 
-  const fetchMonthlySummary = async (empId, dateStr) => {
-    setSummaryLoading(true);
-    try {
-      const cycle = getPayrollCycleFromDate(dateStr);
-      if (!cycle) {
-        toast.error('Invalid date');
-        setSummaryLoading(false);
-        return;
-      }
-      const { year, month } = cycle;
-      const res = await axios.get(
-        `/monthly-summary/employee/${empId}?year=${year}&month=${month}`
-      );
-      console.log('Summary Response:', res.data);
+  return { year, month };
+};
 
-      if (res.data) {
-        let data = null;
 
-        // Handle different response structures
-        if (res.data.success && res.data.data) {
-          data = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data;
-        } else if (res.data.data) {
-          data = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data;
-        } else if (Array.isArray(res.data)) {
-          data = res.data[0];
-        } else {
-          data = res.data;
-        }
+const fetchMonthlySummary = async (empId, dateStr) => {
+  setSummaryLoading(true);
 
-        if (data && Object.keys(data).length > 0) {
-          setSummaryData(data);
-        } else {
-          setSummaryData(null);
-          toast.info('No monthly summary found for this payroll cycle');
-        }
-      } else {
-        setSummaryData(null);
-      }
-    } catch (err) {
-      console.error('Error fetching summary:', err);
-      toast.error(err.response?.data?.message || 'Failed to load monthly summary');
-      setSummaryData(null);
-    } finally {
+  try {
+    const cycle = getPayrollCycleFromDate(dateStr);
+    if (!cycle) {
+      toast.error('Invalid date');
       setSummaryLoading(false);
+      return;
     }
-  };
+
+    const { year, month } = cycle;
+
+const res = await axios.get(
+  `/monthly-summary/employee/${empId}?year=${year}&month=${month}`
+);
+
+console.log('Requested:', { year, month });
+console.log('Response:', res.data);
+
+let summaryObj = null;
+
+// If backend wraps inside success
+if (res.data?.success) {
+  summaryObj = res.data.data;
+} else {
+  summaryObj = res.data;
+}
+
+// 🔥 Ensure it matches year/month strictly
+if (
+  summaryObj &&
+  Number(summaryObj.year) === Number(year) &&
+  Number(summaryObj.month) === Number(month)
+) {
+  setSummaryData(summaryObj);
+} else {
+  setSummaryData(null);
+  toast.info('No monthly summary found for this payroll cycle');
+}
+
+
+  } catch (err) {
+    console.error('Error fetching summary:', err);
+    toast.error(
+      err.response?.data?.message || 'Failed to load monthly summary'
+    );
+    setSummaryData(null);
+  } finally {
+    setSummaryLoading(false);
+  }
+};
+
 
   const handleFileSelect = (file) => {
     if (!file) return;

@@ -280,7 +280,7 @@ const DirectorNavbar = () => {
           </div>
 
           <div style={styles.brand}>
-            Director Dashboard
+            Director
           </div>
 
           <div style={styles.rightSection}>

@@ -282,7 +282,6 @@ const HODNavbar = () => {
 
           <div style={styles.brand}>
             HOD - {department}
-            {/* <span style={styles.badge}>MANAGER</span> */}
           </div>
 
           <div style={styles.rightSection}>

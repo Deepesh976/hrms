@@ -11,14 +11,13 @@ const {
 
 const { protect } = require('../middleware/authMiddleware');
 
-// =========================
-// GLOBAL AUTH
-// =========================
 router.use(protect);
 
 /* =========================================================
-   🔥 GET: Monthly summary by employee (CALCULATE ON DEMAND)
-   Payroll cycle: 21st → 20th
+   🔥 GET: Monthly summary by employee
+   ✔ First checks DB
+   ✔ Only recalculates if NOT found
+   ✔ Prevents empty-activity false negatives
 ========================================================= */
 router.get('/employee/:empId', async (req, res) => {
   try {
@@ -32,6 +31,9 @@ router.get('/employee/:empId', async (req, res) => {
         message: 'year and month are required',
       });
     }
+
+    const y = Number(year);
+    const m = Number(month);
 
     /* =========================
        🔐 HIERARCHY CHECK
@@ -49,18 +51,30 @@ router.get('/employee/:empId', async (req, res) => {
       }
     }
 
-    const y = Number(year);
-    const m = Number(month);
+    /* =========================
+       🔥 STEP 1: CHECK IF ALREADY EXISTS
+    ========================= */
+    let existingSummary = await MonthlySummary.findOne({
+      empId,
+      year: y,
+      month: m,
+    });
+
+    if (existingSummary) {
+      return res.status(200).json({
+        success: true,
+        data: existingSummary,
+      });
+    }
 
     /* =========================
-       🔥 PAYROLL RANGE (21 → 20)
+       🔥 STEP 2: CALCULATE IF NOT FOUND
     ========================= */
+
+    // Payroll cycle 21 → 20
     const cycleStart = new Date(y, m - 1, 21, 0, 0, 0, 0);
     const cycleEnd = new Date(y, m, 20, 23, 59, 59, 999);
 
-    /* =========================
-       FETCH ACTIVITIES
-    ========================= */
     const activities = await Activity.find({
       empId,
       date: { $gte: cycleStart, $lte: cycleEnd },
@@ -69,50 +83,41 @@ router.get('/employee/:empId', async (req, res) => {
     if (!activities.length) {
       return res.status(200).json({
         success: true,
-        data: [],
+        data: null,
         message: 'No activities found for this payroll cycle',
       });
     }
 
-    /* =========================
-       🔥 CALCULATE SUMMARY
-    ========================= */
     const summary = calculateMonthlySummary(
       empId,
       activities[0].empName,
       activities
     );
 
-    /* =========================
-       🔥 SAVE (UPSERT)
-    ========================= */
     await saveMonthlySummary(summary);
 
-    /* =========================
-       RETURN FINAL SUMMARY
-    ========================= */
     const savedSummary = await MonthlySummary.findOne({
       empId,
       year: summary.year,
       month: summary.month,
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      data: [savedSummary],
+      data: savedSummary,
     });
+
   } catch (error) {
     console.error('❌ Get Monthly Summary Error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while fetching monthly summary',
-      error: error.message,
     });
   }
 });
 
 /* =========================================================
-   GET: All monthly summaries (LIST PAGE / ADMIN)
+   GET: All monthly summaries
 ========================================================= */
 router.get('/', async (req, res) => {
   try {
@@ -121,9 +126,6 @@ router.get('/', async (req, res) => {
 
     let filter = {};
 
-    /* =========================
-       🔐 ROLE FILTER
-    ========================= */
     if (role === 'hod' || role === 'director') {
       const { getReportingEmployees } = require('../services/hierarchyService');
       const reportingEmployees = await getReportingEmployees(userId, role);
@@ -169,7 +171,6 @@ router.get('/', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error while fetching monthly summaries',
-      error: error.message,
     });
   }
 });
@@ -193,7 +194,6 @@ router.delete('/employee/:empId', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error while deleting summaries',
-      error: error.message,
     });
   }
 });
@@ -222,35 +222,6 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Server error while deleting summary',
-      error: error.message,
-    });
-  }
-});
-
-/* =========================================================
-   GET: Stats
-========================================================= */
-router.get('/stats', async (req, res) => {
-  try {
-    const totalSummaries = await MonthlySummary.countDocuments();
-    const employees = await MonthlySummary.distinct('empId');
-    const years = await MonthlySummary.distinct('year');
-
-    res.status(200).json({
-      success: true,
-      data: {
-        totalSummaries,
-        uniqueEmployees: employees.length,
-        employees,
-        years: years.sort((a, b) => b - a),
-      },
-    });
-  } catch (error) {
-    console.error('❌ Stats Error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error while fetching stats',
-      error: error.message,
     });
   }
 });
